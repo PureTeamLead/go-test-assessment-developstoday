@@ -13,7 +13,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// TODO: get rid of DTO in repo
 // TODO: dollar placeholder?
 
 type Repository struct {
