@@ -1,0 +1,16 @@
+env: "prod"
+
+db:
+  database: ""
+  username: ""
+  host: "0.0.0.0"
+  port: 5432
+  min-conns: 1
+  max-conns: 10
+  mig-path: "./db/migrations"
+
+http-server:
+  host: "0.0.0.0"
+  port: 8085
+  r-timeout: 5s
+  w-timeout: 10s

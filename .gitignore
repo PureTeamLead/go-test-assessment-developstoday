@@ -2,3 +2,4 @@
 .idea
 bin
 .env
+configs/dev-config.yaml
