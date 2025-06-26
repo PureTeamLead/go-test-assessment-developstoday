@@ -1,0 +1,3 @@
+package cat
+
+//type func()
