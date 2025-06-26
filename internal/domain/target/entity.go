@@ -9,7 +9,6 @@ import (
 
 type Target struct {
 	ID        uuid.UUID
-	MissionID uuid.UUID
 	Name      string `validate:"required"`
 	Country   string `validate:"required"`
 	Notes     string
@@ -18,14 +17,18 @@ type Target struct {
 	UpdatedAt time.Time
 }
 
-// TODO: possibly make optional struct
+// CreateUpdateTargetSvc Notes field is optional
+type CreateUpdateTargetSvc struct {
+	Name    string
+	Country string
+	Notes   *string
+}
 
-func NewEntity(missionID uuid.UUID, name, country string, notes *string) *Target {
+func NewEntity(name, country string, notes *string) *Target {
 	return &Target{
-		Name:      name,
-		Country:   country,
-		Notes:     *notes,
-		MissionID: missionID,
+		Name:    name,
+		Country: country,
+		Notes:   *notes,
 	}
 }
 

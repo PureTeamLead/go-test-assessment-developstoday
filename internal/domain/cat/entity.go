@@ -12,13 +12,20 @@ type Cat struct {
 	Name        string `validate:"required"`
 	YearsXP     int    `validate:"required"`
 	Breed       string `validate:"required"`
-	SalaryCents int64  `validate:"required"`
+	SalaryCents int64  `validate:"min=0 required"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
 
-// TODO: validate update params in service
+type CreateCatSvc struct {
+	Name     string
+	YearsExp int
+	Breed    string
+	Salary   int64
+}
+
 type UpdateCatParams struct {
+	ID          uuid.UUID
 	Name        *string
 	YearsXP     *int
 	Breed       *string
@@ -44,4 +51,22 @@ func (c *Cat) Validate() error {
 	}
 
 	return nil
+}
+
+func (c *Cat) Update(params UpdateCatParams) {
+	if params.Name != nil {
+		c.Name = *(params.Name)
+	}
+
+	if params.Breed != nil {
+		c.Breed = *(params.Breed)
+	}
+
+	if params.YearsXP != nil {
+		c.YearsXP = *(params.YearsXP)
+	}
+
+	if params.SalaryCents != nil {
+		c.SalaryCents = *(params.SalaryCents)
+	}
 }

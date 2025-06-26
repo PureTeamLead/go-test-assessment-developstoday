@@ -4,6 +4,10 @@ import (
 	"context"
 	"flag"
 	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/config"
+	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/domain/cat"
+	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/domain/mission"
+	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/domain/target"
+	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/service"
 	"github.com/PureTeamLead/go-test-assessment-developstoday/pkg/logger"
 	database "github.com/PureTeamLead/go-test-assessment-developstoday/pkg/storage/postgres"
 	"log"
@@ -27,4 +31,13 @@ func Run() {
 		logger.GetLoggerFromCtx(ctx).Fatal("Failed to set up database: " + err.Error())
 	}
 
+	catRepo := cat.NewRepository(db)
+	missionRepo := mission.NewRepository(db)
+	targetRepo := target.NewRepository(db)
+
+	catSvc := cat.NewService(catRepo)
+	misTarSvc := service.New(missionRepo, targetRepo)
+
+	_ = catSvc
+	_ = misTarSvc
 }

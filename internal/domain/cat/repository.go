@@ -2,7 +2,6 @@ package cat
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
@@ -49,7 +48,6 @@ func (r *Repository) GetCatByID(ctx context.Context, id uuid.UUID) (*Cat, error)
 		Select(allColumns).
 		From(tableName).
 		Where(sq.Eq{idColumn: id}).
-		Limit(1).
 		ToSql()
 
 	if err != nil {
@@ -149,7 +147,7 @@ func (r *Repository) GetCats(ctx context.Context) ([]*Cat, error) {
 	return cats, nil
 }
 
-func (r *Repository) AddCat(ctx context.Context, cat AddRepoDTO) (uuid.UUID, error) {
+func (r *Repository) AddCat(ctx context.Context, cat *Cat) (uuid.UUID, error) {
 	const op = "cat.Repository.AddCat"
 	var id uuid.UUID
 
@@ -181,7 +179,7 @@ func (r *Repository) DeleteCat(ctx context.Context, id uuid.UUID) error {
 	}
 
 	if _, err = r.db.Exec(ctx, query, args...); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return utils.ErrCatNotFound
 		}
 		return fmt.Errorf("%s: %w", op, err)

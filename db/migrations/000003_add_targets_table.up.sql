@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS targets (
                                        name VARCHAR(30) NOT NULL,
                                        country VARCHAR(50) NOT NULL,
                                        notes TEXT,
-                                       state state_enum NOT NULL,
+                                       state state_enum NOT NULL DEFAULT 'started',
                                        created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
                                        updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
                                        FOREIGN KEY (mission_id) REFERENCES "missions" (id)
