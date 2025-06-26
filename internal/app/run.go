@@ -8,10 +8,18 @@ import (
 	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/domain/mission"
 	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/domain/target"
 	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/service"
+	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/transport/handler"
 	"github.com/PureTeamLead/go-test-assessment-developstoday/pkg/logger"
 	database "github.com/PureTeamLead/go-test-assessment-developstoday/pkg/storage/postgres"
+	"go.uber.org/zap"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
+
+const timeoutDuration = 10 * time.Second
 
 func Run() {
 	ctx := context.Background()
@@ -30,6 +38,7 @@ func Run() {
 	if err != nil {
 		logger.GetLoggerFromCtx(ctx).Fatal("Failed to set up database: " + err.Error())
 	}
+	defer db.Close()
 
 	catRepo := cat.NewRepository(db)
 	missionRepo := mission.NewRepository(db)
@@ -38,6 +47,24 @@ func Run() {
 	catSvc := cat.NewService(catRepo)
 	misTarSvc := service.New(missionRepo, targetRepo)
 
-	_ = catSvc
-	_ = misTarSvc
+	transport := handler.New(cfg.HTTPSrvConfig, catSvc, misTarSvc)
+
+	go func() {
+		if err = transport.Run(); err != nil {
+			logger.GetLoggerFromCtx(ctx).Error("HTTP server stopped", err)
+		}
+	}()
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+
+	sigStr := <-sig
+	logger.GetLoggerFromCtx(ctx).Info("Interrupted by signal", zap.String("type", sigStr.String()))
+
+	ctx, cancel := context.WithTimeout(ctx, timeoutDuration)
+	defer cancel()
+
+	if err = transport.Stop(ctx); err != nil {
+		logger.GetLoggerFromCtx(ctx).Error("failed server shutdown", err)
+	}
 }
