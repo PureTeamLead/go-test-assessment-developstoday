@@ -3,27 +3,34 @@ package cat
 import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"time"
 )
 
 type Cat struct {
-	Name      string `validate:"required"`
-	YearsXP   int    `validate:"required"`
-	Breed     string `validate:"required"`
-	Salary    int64  `validate:"required"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID          uuid.UUID
+	Name        string `validate:"required"`
+	YearsXP     int    `validate:"required"`
+	Breed       string `validate:"required"`
+	SalaryCents int64  `validate:"required"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+// TODO: validate update params in service
+type UpdateCatParams struct {
+	Name        *string
+	YearsXP     *int
+	Breed       *string
+	SalaryCents *int64
 }
 
 func NewEntity(name string, experience int, breed string, salary int64) *Cat {
-	// CreatedAt and UpdatedAt are assigned for data consistency -> see trigger function in the database migrations
 	return &Cat{
-		Name:      name,
-		YearsXP:   experience,
-		Breed:     breed,
-		Salary:    salary,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		Name:        name,
+		YearsXP:     experience,
+		Breed:       breed,
+		SalaryCents: salary,
 	}
 }
 

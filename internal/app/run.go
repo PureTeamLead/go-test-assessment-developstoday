@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/config"
+	"github.com/PureTeamLead/go-test-assessment-developstoday/pkg/logger"
 	database "github.com/PureTeamLead/go-test-assessment-developstoday/pkg/storage/postgres"
 	"log"
 )
@@ -19,10 +20,11 @@ func Run() {
 		log.Fatalf("Config is not loaded: %s", err.Error())
 	}
 
+	ctx = logger.New(ctx, cfg.Env)
+
 	db, err := database.NewPostgres(ctx, cfg.DBConfig)
 	if err != nil {
-		log.Fatalf("Failed to set up database: %s", err.Error())
+		logger.GetLoggerFromCtx(ctx).Fatal("Failed to set up database: " + err.Error())
 	}
 
-	_ = db
 }
