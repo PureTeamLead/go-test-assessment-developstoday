@@ -24,7 +24,7 @@ const timeoutDuration = 10 * time.Second
 func Run() {
 	ctx := context.Background()
 
-	configPath := flag.String("config", "configs/prod-config.yaml", "Specifying the path of the config file")
+	configPath := flag.String("config", "./app/configs/prod-config.yaml", "Specifying the path of the config file")
 	flag.Parse()
 
 	cfg, err := config.Load(*configPath)

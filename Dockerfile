@@ -19,8 +19,6 @@ FROM alpine
 
 WORKDIR /app
 
-EXPOSE 8085
-
 COPY --from=builder ./app/bin/app /app
 
 CMD ["./app"]
