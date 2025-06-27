@@ -24,11 +24,11 @@ type CreateUpdateTargetSvc struct {
 	Notes   *string
 }
 
-func NewEntity(name, country string, notes *string) *Target {
+func NewEntity(name, country string, notes string) *Target {
 	return &Target{
 		Name:    name,
 		Country: country,
-		Notes:   *notes,
+		Notes:   notes,
 	}
 }
 

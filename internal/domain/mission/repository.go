@@ -22,6 +22,7 @@ const (
 	createdAtColumn = "created_at"
 	updatedAtColumn = "updated_at"
 	completedState  = "completed"
+	startedState    = "started"
 )
 
 type Repository struct {
@@ -45,6 +46,8 @@ func (r *Repository) AddMission(ctx context.Context) (uuid.UUID, error) {
 
 	query, args, err := r.builder.
 		Insert(tableName).
+		Columns(stateColumn).
+		Values(startedState).
 		Suffix("RETURNING " + idColumn).
 		ToSql()
 
@@ -78,7 +81,7 @@ func (r *Repository) DeleteMission(ctx context.Context, id uuid.UUID) error {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
-	if !catID.Valid {
+	if catID.Valid {
 		return utils.ErrCatAssigned
 	}
 
@@ -96,6 +99,9 @@ func (r *Repository) DeleteMission(ctx context.Context, id uuid.UUID) error {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
+	if err = tx.Commit(ctx); err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
 	return nil
 }
 
@@ -245,8 +251,8 @@ func (r *Repository) GetAssignedCat(ctx context.Context, missionID uuid.UUID) (*
 	const op = "cat.Repository.GetAssignedCat"
 	var assignedCat cat.Cat
 
-	query := fmt.Sprintf("SELECT c.id, c.name, c.experience, c.breed, c.salary, c.created_at, c.updated_at" +
-		"FROM cats c JOIN missions m ON m.cat_id = c.id WHERE m.id = ?")
+	query := fmt.Sprintf(`SELECT c.id, c.name, c.experience, c.breed, c.salary, c.created_at, c.updated_at" +
+		"FROM cats c JOIN missions m ON m.cat_id = c.id WHERE m.id = $1`)
 
 	args := []interface{}{
 		missionID,
