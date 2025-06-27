@@ -3,6 +3,7 @@ package utils
 import "errors"
 
 var (
+	ErrValidatingCat     = errors.New("invalid cat input structure")
 	ErrCatNotFound       = errors.New("cat not found")
 	ErrConflictingData   = errors.New("conflict of data occurred")
 	ErrMissionNotFound   = errors.New("mission not found")
@@ -14,4 +15,6 @@ var (
 	ErrCatAssigned       = errors.New("cat is already assigned to the mission, operation is impossible")
 	ErrMissionCompleted  = errors.New("mission is already completed, operation is impossible")
 	ErrTargetCompleted   = errors.New("target is already completed, operation is impossible")
+	ErrInvalidID         = errors.New("invalid ID format")
+	ErrTargetOverflow    = errors.New("too much target in one mission")
 )

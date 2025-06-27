@@ -14,28 +14,30 @@ type Handler struct {
 	MisTargetService MisTargetService
 	Router           *gin.Engine
 	Server           *http.Server
+	Ctx              context.Context
 }
 
 const (
 	catsPath    = "/cats"
 	missionPath = "/missions"
-	targetsPath = "/:mission_id/targets"
+	targetsPath = "/:id/targets"
 )
 
-// TODO: Gin default?
-func New(cfg server.Config, catService CatService, misTarService MisTargetService) *Handler {
+func New(ctx context.Context, cfg server.Config, catService CatService, misTarService MisTargetService) *Handler {
 	router := gin.New()
 	srv := &http.Server{
 		Addr:         fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
-		Handler:      router,
 		ReadTimeout:  cfg.ReadTimeout,
 		WriteTimeout: cfg.WriteTimeout,
 	}
 
-	return &Handler{CatService: catService, MisTargetService: misTarService, Router: router, Server: srv}
+	return &Handler{Ctx: ctx, CatService: catService, MisTargetService: misTarService, Router: router, Server: srv}
 }
 
 func (h *Handler) InitRoutes() {
+	defer h.assignRouter()
+	h.Router.Use(h.TraceLogger())
+
 	catsGroup := h.Router.Group(catsPath)
 	{
 		catsGroup.GET("", h.GetCats)
@@ -51,14 +53,18 @@ func (h *Handler) InitRoutes() {
 		missionsGroup.POST("", h.CreateMission)
 		missionsGroup.GET("/:id", h.GetMission)
 		missionsGroup.DELETE("/:id", h.DeleteMission)
-		missionsGroup.PUT("/:id", h.UpdateMission)
+		missionsGroup.PUT("/:id", h.UpdateMissionState)
 		missionsGroup.PUT("/:id/assign", h.AssignMission)
 
 		targetsGroup := missionsGroup.Group(targetsPath)
-		targetsGroup.PUT("/:target_id", h.UpdateMissionTarget)
+		targetsGroup.PUT("/:target-id", h.UpdateMissionTarget)
 		targetsGroup.POST("/", h.AddMissionTarget)
-		targetsGroup.DELETE("/:target_id", h.DeleteMissionTarget)
+		targetsGroup.DELETE("/:target-id", h.DeleteMissionTarget)
 	}
+}
+
+func (h *Handler) assignRouter() {
+	h.Server.Handler = h.Router
 }
 
 func (h *Handler) Run() error {

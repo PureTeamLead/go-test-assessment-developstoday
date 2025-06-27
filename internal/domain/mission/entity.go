@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+const MissionSize = 3
+
 type Mission struct {
 	ID        uuid.UUID
 	State     string

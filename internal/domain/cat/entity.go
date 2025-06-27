@@ -1,7 +1,7 @@
 package cat
 
 import (
-	"fmt"
+	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/utils"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"time"
@@ -12,7 +12,7 @@ type Cat struct {
 	Name        string `validate:"required"`
 	YearsXP     int    `validate:"required"`
 	Breed       string `validate:"required"`
-	SalaryCents int64  `validate:"min=0 required"`
+	SalaryCents int64  `validate:"gte=0"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -47,7 +47,7 @@ func (c *Cat) Validate() error {
 	validate := validator.New(validator.WithRequiredStructEnabled())
 
 	if err := validate.Struct(c); err != nil {
-		return fmt.Errorf("%s: %s", op, err.Error())
+		return utils.ErrValidatingCat
 	}
 
 	return nil

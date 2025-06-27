@@ -17,18 +17,11 @@ type Target struct {
 	UpdatedAt time.Time
 }
 
-// CreateUpdateTargetSvc Notes field is optional
-type CreateUpdateTargetSvc struct {
-	Name    string
-	Country string
-	Notes   *string
-}
-
-func NewEntity(name, country string, notes *string) *Target {
+func NewEntity(name, country string, notes string) *Target {
 	return &Target{
 		Name:    name,
 		Country: country,
-		Notes:   *notes,
+		Notes:   notes,
 	}
 }
 

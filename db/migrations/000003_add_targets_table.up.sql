@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS targets (
                                        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                                       mission_id UUID NOT NULL UNIQUE,
+                                       mission_id UUID,
                                        name VARCHAR(30) NOT NULL,
                                        country VARCHAR(50) NOT NULL,
                                        notes TEXT,
