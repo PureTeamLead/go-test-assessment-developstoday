@@ -30,8 +30,11 @@ type Repository struct {
 }
 
 func NewRepository(pool *pgxpool.Pool) *Repository {
+	builder := sq.StatementBuilderType{}
+	builder = builder.PlaceholderFormat(sq.Dollar)
 	return &Repository{
-		db: pool,
+		db:      pool,
+		builder: builder,
 	}
 }
 

@@ -31,7 +31,9 @@ const (
 )
 
 func NewRepository(pool *pgxpool.Pool) *Repository {
-	return &Repository{db: pool}
+	builder := sq.StatementBuilderType{}
+	builder = builder.PlaceholderFormat(sq.Dollar)
+	return &Repository{db: pool, builder: builder}
 }
 
 func (r *Repository) AddTarget(ctx context.Context, missionID uuid.UUID, target *Target) (uuid.UUID, error) {

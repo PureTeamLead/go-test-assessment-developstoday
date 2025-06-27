@@ -105,6 +105,9 @@ func (s *Service) UpdateCat(ctx context.Context, params UpdateCatParams) (*Cat, 
 	}
 
 	cat.Update(params)
+	if err = cat.Validate(); err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
 
 	err = s.repo.UpdateCat(ctx, cat)
 	if err != nil {

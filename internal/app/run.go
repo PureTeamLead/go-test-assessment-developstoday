@@ -47,7 +47,9 @@ func Run() {
 	catSvc := cat.NewService(catRepo)
 	misTarSvc := service.New(missionRepo, targetRepo)
 
-	transport := handler.New(cfg.HTTPSrvConfig, catSvc, misTarSvc)
+	logger.GetLoggerFromCtx(ctx).WithPort(ctx)
+	transport := handler.New(ctx, cfg.HTTPSrvConfig, catSvc, misTarSvc)
+	transport.InitRoutes()
 
 	go func() {
 		if err = transport.Run(); err != nil {

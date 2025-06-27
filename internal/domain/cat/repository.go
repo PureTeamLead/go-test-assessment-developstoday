@@ -37,7 +37,9 @@ const (
 )
 
 func NewRepository(pool *pgxpool.Pool) *Repository {
-	return &Repository{db: pool}
+	builder := sq.StatementBuilderType{}
+	builder = builder.PlaceholderFormat(sq.Dollar)
+	return &Repository{db: pool, builder: builder}
 }
 
 func (r *Repository) GetCatByID(ctx context.Context, id uuid.UUID) (*Cat, error) {
@@ -164,6 +166,13 @@ func (r *Repository) AddCat(ctx context.Context, cat *Cat) (uuid.UUID, error) {
 
 	err = r.db.QueryRow(ctx, query, args...).Scan(&id)
 	if err != nil {
+		var pgErr *pgconn.PgError
+		if ok := errors.As(err, &pgErr); ok {
+			if pgErr.Code == "23505" {
+				return uuid.Nil, fmt.Errorf("%s: %w", op, utils.ErrConflictingData)
+			}
+		}
+
 		return uuid.Nil, fmt.Errorf("%s: %w", op, err)
 	}
 
