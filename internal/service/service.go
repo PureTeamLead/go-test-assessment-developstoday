@@ -42,7 +42,7 @@ func New(mr MissionRepository, tr TargetRepository) *Service {
 	return &Service{mr: mr, tr: tr}
 }
 
-func (s *Service) CreateMission(ctx context.Context, rawTargets []target.CreateUpdateTargetSvc) (uuid.UUID, error) {
+func (s *Service) CreateMission(ctx context.Context, rawTargets []CreateUpdateTargetSvc) (uuid.UUID, error) {
 	const op = "service.CreateMission"
 
 	if len(rawTargets) == 0 {
@@ -182,7 +182,7 @@ func (s *Service) DeleteTargetFromMission(ctx context.Context, id uuid.UUID) err
 	return nil
 }
 
-func (s *Service) AddTargetToMission(ctx context.Context, targetID uuid.UUID, missionID uuid.UUID) error {
+func (s *Service) AddTargetToMission(ctx context.Context, missionID uuid.UUID, tarReq CreateUpdateTargetSvc) error {
 	const op = "service.AddTargetToMission"
 
 	mis, err := s.mr.GetMissionByID(ctx, missionID)
@@ -190,14 +190,20 @@ func (s *Service) AddTargetToMission(ctx context.Context, targetID uuid.UUID, mi
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
+	targets, err := s.tr.GetTargetsByMissionID(ctx, missionID)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	if len(targets) == mission.MissionSize {
+		return utils.ErrTargetOverflow
+	}
+
 	if mis.State == completedState {
 		return utils.ErrMissionCompleted
 	}
 
-	tar, err := s.tr.GetTargetByID(ctx, targetID)
-	if err != nil {
-		return fmt.Errorf("%s: %w", op, err)
-	}
+	tar := MapTargetSvcToEntity(tarReq)
 
 	if _, err = s.tr.AddTarget(ctx, missionID, tar); err != nil {
 		return fmt.Errorf("%s: %w", op, err)

@@ -1,6 +1,8 @@
 package dto
 
-import "github.com/PureTeamLead/go-test-assessment-developstoday/internal/domain/target"
+import (
+	"github.com/PureTeamLead/go-test-assessment-developstoday/internal/service"
+)
 
 type CreateTargetReq struct {
 	Name    string  `json:"name"`
@@ -8,14 +10,16 @@ type CreateTargetReq struct {
 	Notes   *string `json:"notes,omitempty"`
 }
 
-func MapTargetsToRaw(reqTargets []CreateTargetReq) []target.CreateUpdateTargetSvc {
-	targets := make([]target.CreateUpdateTargetSvc, 0, len(reqTargets))
+func MapTargetsToRaw(reqTargets []CreateTargetReq) []service.CreateUpdateTargetSvc {
+	targets := make([]service.CreateUpdateTargetSvc, 0, len(reqTargets))
 
 	for _, rawTarget := range reqTargets {
-		tar := target.CreateUpdateTargetSvc{Name: rawTarget.Name, Country: rawTarget.Country, Notes: rawTarget.Notes}
-
+		tar := MapTargetToRaw(rawTarget)
 		targets = append(targets, tar)
 	}
-
 	return targets
+}
+
+func MapTargetToRaw(reqTarget CreateTargetReq) service.CreateUpdateTargetSvc {
+	return service.CreateUpdateTargetSvc{Name: reqTarget.Name, Country: reqTarget.Country, Notes: reqTarget.Notes}
 }

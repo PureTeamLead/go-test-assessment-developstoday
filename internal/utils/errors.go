@@ -16,4 +16,5 @@ var (
 	ErrMissionCompleted  = errors.New("mission is already completed, operation is impossible")
 	ErrTargetCompleted   = errors.New("target is already completed, operation is impossible")
 	ErrInvalidID         = errors.New("invalid ID format")
+	ErrTargetOverflow    = errors.New("too much target in one mission")
 )

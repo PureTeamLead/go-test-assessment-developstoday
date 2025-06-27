@@ -36,6 +36,7 @@ func New(ctx context.Context, cfg server.Config, catService CatService, misTarSe
 
 func (h *Handler) InitRoutes() {
 	defer h.assignRouter()
+	h.Router.Use(h.TraceLogger())
 
 	catsGroup := h.Router.Group(catsPath)
 	{
@@ -52,7 +53,7 @@ func (h *Handler) InitRoutes() {
 		missionsGroup.POST("", h.CreateMission)
 		missionsGroup.GET("/:id", h.GetMission)
 		missionsGroup.DELETE("/:id", h.DeleteMission)
-		missionsGroup.PUT("/:id", h.UpdateMission)
+		missionsGroup.PUT("/:id", h.UpdateMissionState)
 		missionsGroup.PUT("/:id/assign", h.AssignMission)
 
 		targetsGroup := missionsGroup.Group(targetsPath)

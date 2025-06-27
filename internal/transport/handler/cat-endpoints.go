@@ -22,7 +22,9 @@ type CatService interface {
 	UpdateCat(ctx context.Context, params cat.UpdateCatParams) (*cat.Cat, error)
 }
 
-const idParam = "id"
+const (
+	idParam = "id"
+)
 
 func (h *Handler) GetCats(c *gin.Context) {
 	const op = "handler.GetCats"
@@ -107,7 +109,7 @@ func (h *Handler) GetCat(c *gin.Context) {
 }
 
 func (h *Handler) UpdateCat(c *gin.Context) {
-	const op = "handler.GetCat"
+	const op = "handler.UpdateCat"
 
 	id := c.Param(idParam)
 	parsedID, err := uuid.Parse(id)
