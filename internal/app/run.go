@@ -24,13 +24,15 @@ const timeoutDuration = 10 * time.Second
 func Run() {
 	ctx := context.Background()
 
-	configPath := flag.String("config", "./configs/prod-config.yaml", "Specifying the path of the config file")
+	configPath := flag.String("config", "configs/prod-config.yaml", "Specifying the path of the config file")
 	flag.Parse()
 
 	cfg, err := config.Load(*configPath)
 	if err != nil {
 		log.Fatalf("Config is not loaded: %s", err.Error())
 	}
+
+	log.Println(cfg.DBConfig.Username, cfg.DBConfig.Password)
 
 	ctx = logger.New(ctx, cfg.Env)
 

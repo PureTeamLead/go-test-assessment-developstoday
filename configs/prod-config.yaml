@@ -1,13 +1,13 @@
 env: "prod"
 
 db:
-  database: ""
-  username: ""
-  host: "0.0.0.0"
+  database: "assessment"
+  username: "themaxs"
+  host: "localhost"
   port: 5432
   min-conns: 1
   max-conns: 10
-  mig-path: "./db/migrations"
+  mig-path: "/app/db/migrations"
 
 http-server:
   host: "0.0.0.0"
