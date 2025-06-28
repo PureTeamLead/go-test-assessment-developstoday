@@ -7,12 +7,10 @@ import (
 )
 
 const (
-	Key       = "logger"
-	RequestID = "request_id"
-	GrpcPort  = "grpc_port"
-	HTTPPort  = "http_port"
-	DevEnv    = "dev"
-	ProdEnv   = "prod"
+	Key      = "logger"
+	HTTPPort = "http_port"
+	DevEnv   = "dev"
+	ProdEnv  = "prod"
 )
 
 type Logger struct {
@@ -44,17 +42,11 @@ func GetLoggerFromCtx(ctx context.Context) *Logger {
 	return ctx.Value(Key).(*Logger)
 }
 
-func (l *Logger) WithPort(ctx context.Context) {
-	grpcPort := ctx.Value(GrpcPort)
-	httpPort := ctx.Value(HTTPPort)
-
-	if grpcPort != nil {
-		l.l = l.l.With(zap.String(GrpcPort, grpcPort.(string)))
-		return
-	}
+func (l *Logger) WithPort(ctx context.Context, portKey string) {
+	httpPort := ctx.Value(portKey)
 
 	if httpPort != nil {
-		l.l = l.l.With(zap.String(HTTPPort, httpPort.(string)))
+		l.l = l.l.With(zap.Int(HTTPPort, httpPort.(int)))
 		return
 	}
 

@@ -25,11 +25,7 @@ const (
 
 func New(ctx context.Context, cfg server.Config, catService CatService, misTarService MisTargetService) *Handler {
 	router := gin.New()
-	srv := &http.Server{
-		Addr:         fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
-		ReadTimeout:  cfg.ReadTimeout,
-		WriteTimeout: cfg.WriteTimeout,
-	}
+	srv := server.New(cfg)
 
 	return &Handler{Ctx: ctx, CatService: catService, MisTargetService: misTarService, Router: router, Server: srv}
 }

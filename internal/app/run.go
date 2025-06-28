@@ -19,12 +19,15 @@ import (
 	"time"
 )
 
-const timeoutDuration = 10 * time.Second
+const (
+	timeoutDuration = 10 * time.Second
+	portCtx         = "port"
+)
 
 func Run() {
 	ctx := context.Background()
 
-	configPath := flag.String("config", "./app/configs/prod-config.yaml", "Specifying the path of the config file")
+	configPath := flag.String("config", "./configs/prod-config.yaml", "Specifying the path of the config file")
 	flag.Parse()
 
 	cfg, err := config.Load(*configPath)
@@ -35,6 +38,7 @@ func Run() {
 	log.Println(cfg.DBConfig.Username, cfg.DBConfig.Password)
 
 	ctx = logger.New(ctx, cfg.Env)
+	ctx = context.WithValue(ctx, portCtx, cfg.HTTPSrvConfig.Port)
 
 	db, err := database.NewPostgres(ctx, cfg.DBConfig)
 	if err != nil {
@@ -49,7 +53,7 @@ func Run() {
 	catSvc := cat.NewService(catRepo)
 	misTarSvc := service.New(missionRepo, targetRepo)
 
-	logger.GetLoggerFromCtx(ctx).WithPort(ctx)
+	logger.GetLoggerFromCtx(ctx).WithPort(ctx, portCtx)
 	transport := handler.New(ctx, cfg.HTTPSrvConfig, catSvc, misTarSvc)
 	transport.InitRoutes()
 

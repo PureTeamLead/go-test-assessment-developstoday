@@ -30,7 +30,6 @@ func NewPostgres(ctx context.Context, cfg PostgresConfig) (*pgxpool.Pool, error)
 	}
 
 	pool, err := pgxpool.NewWithConfig(ctx, postgresCfg)
-
 	if err != nil {
 		return nil, fmt.Errorf("unable to connect to database: %w", err)
 	}

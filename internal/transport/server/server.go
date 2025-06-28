@@ -13,9 +13,7 @@ type Config struct {
 	WriteTimeout time.Duration `yaml:"r-timeout" env:"HTTP_SERVER_WRITE_TIMEOUT"`
 }
 
-// TODO: maybe set a handler
-
-func New(cfg *Config) *http.Server {
+func New(cfg Config) *http.Server {
 	return &http.Server{
 		Addr:         fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
 		ReadTimeout:  cfg.ReadTimeout,
