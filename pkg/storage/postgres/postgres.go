@@ -10,8 +10,8 @@ import (
 )
 
 type PostgresConfig struct {
-	Database string `yaml:"database" env:"POSTGRES_NAME"`
-	Username string `yaml:"username" env:"POSTGRES_USERNAME"`
+	Database string `yaml:"database" env:"POSTGRES_DB"`
+	Username string `yaml:"username" env:"POSTGRES_USER"`
 	Password string `yaml:"password" env:"POSTGRES_PASSWORD" env-required:"true"`
 	Host     string `yaml:"host" env:"POSTGRES_HOST"`
 	Port     int    `yaml:"port" env:"POSTGRES_PORT"`
@@ -30,7 +30,6 @@ func NewPostgres(ctx context.Context, cfg PostgresConfig) (*pgxpool.Pool, error)
 	}
 
 	pool, err := pgxpool.NewWithConfig(ctx, postgresCfg)
-
 	if err != nil {
 		return nil, fmt.Errorf("unable to connect to database: %w", err)
 	}

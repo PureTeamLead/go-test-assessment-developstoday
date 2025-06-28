@@ -39,7 +39,6 @@ func NewRepository(pool *pgxpool.Pool) *Repository {
 	}
 }
 
-// TODO: check
 func (r *Repository) AddMission(ctx context.Context) (uuid.UUID, error) {
 	const op = "mission.Repository.AddMission"
 	var id uuid.UUID

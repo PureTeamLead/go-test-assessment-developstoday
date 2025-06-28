@@ -1,9 +1,7 @@
 env: "prod"
 
 db:
-  database: ""
-  username: ""
-  host: "0.0.0.0"
+  host: "postgres"
   port: 5432
   min-conns: 1
   max-conns: 10
