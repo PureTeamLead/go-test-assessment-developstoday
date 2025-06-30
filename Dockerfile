@@ -23,7 +23,6 @@ WORKDIR /cat-app
 COPY --from=builder ./bin/app ./bin/app
 COPY --from=builder /app/configs ./configs
 COPY --from=builder /app/db ./db
-#COPY --from=builder /app/.env ./.env
 
 CMD ["./bin/app"]
 
