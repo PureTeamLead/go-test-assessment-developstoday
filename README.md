@@ -39,6 +39,3 @@ docker-compose up -d
 ## Application endpoints
 
 Are available as a [Postman Collection](https://www.postman.com/payload-candidate-40552263/spycatagency/collection/le9jv1k/spycatagency?action=share&creator=40502373)
-
-
-
