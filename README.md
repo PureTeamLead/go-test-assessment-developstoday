@@ -22,8 +22,8 @@ docker-compose up -d
 
 ## Possible issues
 
-- Error with migrations
-Solution:
+- Error with migrations.<br>
+Solution:<br>
 Let Postgres container run and open another Terminal window:
 
 ```bash
